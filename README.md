@@ -96,7 +96,7 @@ A completed mutation should be able to state, at minimum:
 - admitted evidence and uncertainty;
 - score identity;
 - mutation identity/seed;
-- resolved performance identity;
+- resolved performance identity/hash;
 - exporter/render profile;
 - output hashes;
 - explicit provenance distinguishing source evidence from new proposal.
@@ -158,9 +158,30 @@ Authority class cannot be promoted in place. A concrete realization is recorded 
 
 `canonicalStringify()` and `hashCanonical()` provide the appliance-local `hp-canonical-json-v1` deterministic serialization/hash used by this seam. That policy is local to Haunted Phonograph v1; it is not a replacement for wider Collective canonical identity law.
 
-Specimen 001 should consume this provenance module rather than reimplementing evidence/uncertainty/proposal classification.
+Specimen 001 consumes this provenance module rather than reimplementing evidence/uncertainty/proposal classification.
 
-Run the executable proof with:
+## Specimen 001 — first complete crossing
+
+Run the first end-to-end musical specimen with:
+
+```bash
+npm run specimen:001
+```
+
+The default command uses the checked-in real PCM source fixture plus its explicitly admitted bounded observation declaration, applies one deterministic interval-preserving motif displacement, resolves renderer-neutral performance state, and writes:
+
+```text
+out/specimen-001.mid
+out/specimen-001.receipt.json
+```
+
+The MIDI exporter receives only `ResolvedPerformance`; it does not inspect the source recording or make new musical decisions. The success receipt binds the source, observation authorities, score, mutation route, resolved performance, MIDI export profile, and final MIDI hash.
+
+Specimen 001 intentionally does **not** claim automatic music understanding. Tempo, motif pitches, and motif durations are admitted fixture/manual evidence bound to the exact WAV hash. Harmonic quality remains explicit uncertainty and is carried through the performance by provenance reference rather than being silently converted into a chord or key.
+
+The default source fixture is a compact 1 kHz mono 16-bit PCM WAV containing the four-note phrase `[60, 64, 67, 64]`. Its low sample rate is a repository-fixture choice, not an analysis assumption; its job is to provide real source bytes with stable identity while keeping this executable proof small.
+
+Run all tests with:
 
 ```bash
 npm test
