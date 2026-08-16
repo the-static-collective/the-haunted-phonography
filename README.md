@@ -143,3 +143,25 @@ Build the smallest end-to-end specimen that proves this claim:
 > **A recording can become genuinely new music without confusing what was heard with what was invented.**
 
 That specimen should be playable, deterministic where declared, and receipted.
+
+## Executable provenance floor
+
+Issue #2 establishes the first executable seam in `src/provenance.mjs`.
+
+The module keeps three authority classes distinct:
+
+- `evidence` for source-backed claims;
+- `uncertainty` for incomplete source-facing claims, including explicit unknown;
+- `proposal` for new musical possibility.
+
+Authority class cannot be promoted in place. A concrete realization is recorded separately from its source claim: an unchanged exact evidence value may remain `direct-evidence`, while any changed value—or any choice made from uncertainty/proposal—is a `proposal-choice` that retains the source claim hash and original authority.
+
+`canonicalStringify()` and `hashCanonical()` provide the appliance-local `hp-canonical-json-v1` deterministic serialization/hash used by this seam. That policy is local to Haunted Phonograph v1; it is not a replacement for wider Collective canonical identity law.
+
+Specimen 001 should consume this provenance module rather than reimplementing evidence/uncertainty/proposal classification.
+
+Run the executable proof with:
+
+```bash
+npm test
+```
