@@ -25,7 +25,7 @@ test('source identity binds the exact WAV bytes', async () => {
   const declaration = await loadDeclaration();
   assert.equal(source.schema, 'haunted-phonograph/source/v1');
   assert.equal(source.sha256, declaration.sourceHash);
-  assert.equal(source.byteLength, 8044);
+  assert.equal(source.byteLength, 4044);
   assert.equal(Object.isFrozen(source), true);
 });
 

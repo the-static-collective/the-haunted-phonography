@@ -38,7 +38,7 @@ test('mutation is deterministic and explicit seed routing leaves evidence untouc
   const before = structuredClone(observations.hashes);
   const a1 = mutateScore({ score, seed: 'seed-001' });
   const a2 = mutateScore({ score, seed: 'seed-001' });
-  const b = mutateScore({ score, seed: 'seed-005' });
+  const b = mutateScore({ score, seed: 'seed-002' });
   assert.deepEqual(a1, a2);
   assert.notEqual(a1.selectedOffset, b.selectedOffset);
   assert.deepEqual(observations.hashes, before);

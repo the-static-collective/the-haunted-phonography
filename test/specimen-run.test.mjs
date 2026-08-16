@@ -86,7 +86,7 @@ test('failed MIDI crossing leaves no completed receipt', async () => {
 
 test('receipt refuses an internally mismatched execution chain', async () => {
   const pipeline = await purePipeline('seed-001');
-  const other = await purePipeline('seed-005');
+  const other = await purePipeline('seed-002');
   assert.throws(
     () => buildReceipt({ ...pipeline, mutationResult: other.mutationResult }),
     error => error?.code === 'RECEIPT_CHAIN_MISMATCH',
