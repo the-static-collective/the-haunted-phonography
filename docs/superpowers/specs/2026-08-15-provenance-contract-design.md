@@ -56,9 +56,13 @@ The realization records:
 - original `sourceAuthority`;
 - concrete JSON-safe realized value;
 - resolver identity/version;
-- `selectionAuthority`, which is `direct-evidence` only when the source claim is evidence and `proposal-choice` when the source is uncertainty or proposal.
+- `selectionAuthority`.
 
-Therefore a deterministic, playable choice selected from uncertainty remains visibly rooted in uncertainty and is not valid as an exact evidence claim.
+`selectionAuthority` is `direct-evidence` only when the source claim is evidence **and the realized value is canonically identical to the evidence value**. Any changed value derived from evidence is a `proposal-choice`. A realization sourced from uncertainty or proposal is also always a `proposal-choice`.
+
+Therefore a deterministic, playable choice selected from uncertainty remains visibly rooted in uncertainty and is not valid as an exact evidence claim. Likewise, evidence cannot be laundered through the realization boundary: changing `4/4` evidence to `3/4` creates a proposal choice even though the parent claim is evidence.
+
+A realization must be concrete. The explicit `{ "state": "unknown" }` marker is valid for uncertainty claims but is refused as a resolved performance value.
 
 ## Canonical bytes and hash
 
@@ -68,7 +72,8 @@ Add a repository-local `hp-canonical-json-v1` serializer:
 - array order preserved;
 - JSON primitive/string semantics preserved;
 - no Unicode normalization;
-- reject `undefined`, functions, symbols, bigint, non-finite numbers, sparse arrays, and non-plain objects;
+- reject `undefined`, functions, symbols, bigint, non-finite numbers, sparse arrays, cycles, and non-plain objects;
+- preserve literal data keys such as `__proto__` without treating them as prototype mutation;
 - SHA-256 over the resulting UTF-8 bytes, returned as `sha256:<hex>`.
 
 This is an appliance-local deterministic provenance hash for v1, not a claim to replace Project0/TranchNode canonical identity. A later shared boundary may replace or map it only through an explicit versioned migration.
@@ -113,11 +118,13 @@ The executable proof must show:
 3. proposal may cite evidence/uncertainty refs without becoming evidence;
 4. proposal → evidence and uncertainty → evidence reclassification fail with `AUTHORITY_CLASS_IMMUTABLE`;
 5. a concrete realization from uncertainty is playable/serializable but remains `sourceAuthority: uncertainty` with `selectionAuthority: proposal-choice`;
-6. realization does not mutate its source claim;
-7. canonical hashes are independent of object insertion order;
-8. authority/provenance changes alter the hash;
-9. invalid JSON/provenance fails closed;
-10. `npm test` passes with zero production dependencies.
+6. exact evidence realized unchanged may be `direct-evidence`, while any changed realization from evidence becomes `proposal-choice`;
+7. realization refuses the unknown marker as a concrete performance value and does not mutate its source claim;
+8. canonical hashes are independent of object insertion order while array order remains significant;
+9. authority/provenance changes alter the hash;
+10. invalid JSON/provenance, including cycles and sparse arrays, fails closed;
+11. literal `__proto__` data is preserved safely;
+12. `npm test` passes with zero production dependencies.
 
 ## Non-goals
 
