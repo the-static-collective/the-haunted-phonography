@@ -1,0 +1,30 @@
+{
+  "schema": "haunted-phonograph/observation-declaration/v1",
+  "sourceHash": "sha256:f4324a508841134496e2512ffc3355133d17fe0c5efca649cc9412f4ed909b4c",
+  "method": {
+    "id": "fixture-manual-observation",
+    "version": "1"
+  },
+  "tempoBpm": 120,
+  "motifPitches": [
+    60,
+    64,
+    67,
+    64
+  ],
+  "motifDurationsQuarter": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "harmonyQuality": {
+    "state": "unknown",
+    "uncertainty": {
+      "alternatives": [
+        "major",
+        "sus"
+      ]
+    }
+  }
+}

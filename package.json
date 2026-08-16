@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "specimen:001": "node scripts/run-specimen-001.mjs"
   },
   "engines": {
     "node": ">=22"
