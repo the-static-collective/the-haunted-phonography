@@ -179,7 +179,7 @@ The MIDI exporter receives only `ResolvedPerformance`; it does not inspect the s
 
 Specimen 001 intentionally does **not** claim automatic music understanding. Tempo, motif pitches, and motif durations are admitted fixture/manual evidence bound to the exact WAV hash. Harmonic quality remains explicit uncertainty and is carried through the performance by provenance reference rather than being silently converted into a chord or key.
 
-The default source fixture is a compact 2 kHz mono 16-bit PCM WAV containing the four-note phrase `[60, 64, 67, 64]`. Its low sample rate is a repository-fixture choice, not an analysis assumption; its job is to provide real source bytes with stable identity while keeping this executable proof small.
+The default source fixture is a compact 1 kHz mono 16-bit PCM WAV containing the four-note phrase `[60, 64, 67, 64]`. Its low sample rate is a repository-fixture choice, not an analysis assumption; its job is to provide real source bytes with stable identity while keeping this executable proof small.
 
 Run all tests with:
 
