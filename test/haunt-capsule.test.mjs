@@ -65,6 +65,24 @@ test('rejects sibling memory that claims stronger authority', () => {
   );
 });
 
+test('rejects undeclared fields instead of accepting semantic smuggling', () => {
+  const capsule = structuredClone(createHauntCapsule(input()));
+  capsule.evidence = { promoted: true };
+  capsule.capsuleId = hashHauntCapsule(capsule);
+  assert.throws(
+    () => validateHauntCapsule(capsule),
+    error => error?.code === 'HAUNT_INVALID_CAPSULE',
+  );
+
+  const nested = structuredClone(createHauntCapsule(input()));
+  nested.invitations[0].rendererHint = 'secret-side-channel';
+  nested.capsuleId = hashHauntCapsule(nested);
+  assert.throws(
+    () => validateHauntCapsule(nested),
+    error => error?.code === 'HAUNT_INVALID_CAPSULE',
+  );
+});
+
 test('rejects forbidden influence surfaces and invalid strength', () => {
   assert.throws(
     () => createHauntCapsule({
