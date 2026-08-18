@@ -77,12 +77,12 @@ test('resolved performance realizes late-bloom dynamics without raw capsule auth
   assert.deepEqual(performance.retainedUncertaintyRefs, ['sha256:harmony']);
 });
 
-test('legacy mutation remains uniform velocity with no HAUNT influence', () => {
+test('legacy mutation keeps exact old shape and uniform velocity', () => {
   const { score, observations } = setup();
   const mutationResult = mutateScore({ score, seed: 'seed-001' });
   const performance = resolvePerformance({ score, observations, mutationResult });
-  assert.deepEqual(mutationResult.velocityProfile, [88, 88, 88, 88]);
-  assert.equal(mutationResult.hauntInfluence, null);
+  assert.equal(Object.hasOwn(mutationResult, 'velocityProfile'), false);
+  assert.equal(Object.hasOwn(mutationResult, 'hauntInfluence'), false);
   assert.deepEqual(performance.events.map(event => event.velocity), [88, 88, 88, 88]);
-  assert.equal(performance.hauntInfluence, null);
+  assert.equal(Object.hasOwn(performance, 'hauntInfluence'), false);
 });
