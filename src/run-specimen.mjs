@@ -4,12 +4,14 @@ import { canonicalStringify } from './provenance.mjs';
 import { identifySource } from './source.mjs';
 import { admitObservations } from './observations.mjs';
 import { buildScore } from './score.mjs';
+import { validateHauntCapsule } from './haunt-capsule.mjs';
+import { buildHauntInfluencePlan } from './haunt-influence.mjs';
 import { mutateScore } from './mutation.mjs';
 import { resolvePerformance } from './performance.mjs';
 import { encodeMidi } from './midi.mjs';
 import { buildReceipt } from './receipt.mjs';
 
-export async function runSpecimen({ sourcePath, observationsPath, outputStem, seed }) {
+export async function runSpecimen({ sourcePath, observationsPath, outputStem, seed, capsulesPath = null }) {
   const midiPath = `${outputStem}.mid`;
   const receiptPath = `${outputStem}.receipt.json`;
   const midiTempPath = `${midiPath}.tmp-${process.pid}`;
@@ -25,7 +27,18 @@ export async function runSpecimen({ sourcePath, observationsPath, outputStem, se
     const declaration = JSON.parse(await readFile(observationsPath, 'utf8'));
     const observations = admitObservations({ source, declaration });
     const score = buildScore({ source, observations });
-    const mutationResult = mutateScore({ score, seed });
+
+    let hauntInfluencePlan = null;
+    if (capsulesPath) {
+      const rawCapsules = JSON.parse(await readFile(capsulesPath, 'utf8'));
+      const capsules = Array.isArray(rawCapsules) ? rawCapsules : [rawCapsules];
+      for (const capsule of capsules) validateHauntCapsule(capsule);
+      hauntInfluencePlan = buildHauntInfluencePlan({ score, seed, capsules });
+    }
+
+    const mutationResult = hauntInfluencePlan
+      ? mutateScore({ score, seed, hauntInfluencePlan })
+      : mutateScore({ score, seed });
     const performance = resolvePerformance({ score, observations, mutationResult });
     const midiBytes = encodeMidi(performance);
 
