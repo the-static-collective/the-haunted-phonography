@@ -1,13 +1,13 @@
 # HAUNT v0.1 — Verification Evidence
 
 Date: 2026-08-18
-Implementation head verified: `241cec33196937c5372ee729923b053744e6dddb`
+Runtime head verified: `ee347d808f255b0a73167dfa3843be8e6dc773d7`
 Design: `docs/superpowers/specs/2026-08-18-haunt-cross-appliance-memory-v1-design.md`
 Plan: `docs/superpowers/plans/2026-08-18-haunt-cross-appliance-memory-v1.md`
 
 ## Exact GitHub CI proof
 
-GitHub Actions run `32120164584` checked out PR #8 merge ref `e8ed4ab8744f2ef7dbac028ef03104644da3f280`, which merged implementation head `241cec33196937c5372ee729923b053744e6dddb` into current `main` base `d0cab7a3fcf7ec0a3963068497b124aa8e8eeb4a`.
+GitHub Actions run `32121227447` checked out PR #8 merge ref `6bd6d7e79aae8431977c67230e60085566b68a5b`, which merged runtime head `ee347d808f255b0a73167dfa3843be8e6dc773d7` into current `main` base `d0cab7a3fcf7ec0a3963068497b124aa8e8eeb4a`.
 
 Environment:
 
@@ -18,14 +18,16 @@ Environment:
 Result:
 
 ```text
-49 tests
-49 pass
+50 tests
+50 pass
 0 fail
 0 skipped
 0 todo
 ```
 
-The run includes all 15 pre-existing provenance tests, all 13 pre-existing Specimen 001 source/score/MIDI/receipt tests, and 21 HAUNT tests.
+The run includes all 15 pre-existing provenance tests, all 13 pre-existing Specimen 001 source/score/MIDI/receipt tests, and 22 HAUNT tests.
+
+The final review hardening test proves that a capsule cannot smuggle undeclared top-level or nested fields across the sibling boundary even if the attacker recomputes the capsule hash. HAUNT v0.1 now fails closed on exact declared keys for the capsule, origin, relations, invitations, lineage, unresolved residue, and provenance.
 
 ## HAUNT executable crossing
 
@@ -115,6 +117,7 @@ The executable tests prove at least these boundaries:
 
 - stale capsule identity is refused;
 - sibling memory claiming `evidence` authority is refused;
+- undeclared top-level and nested fields are refused even after re-hashing;
 - renderer-facing influence surfaces are refused;
 - unsupported pressures become deterministic ignore residue;
 - absent applicable invitations become deterministic ignore residue;
