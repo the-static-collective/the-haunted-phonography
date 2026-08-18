@@ -4,7 +4,7 @@
 
 **Goal:** Prove that one Toaster-derived memory capsule can deterministically alter Haunted Phonograph proposal routing, survive into the completed receipt as influence-only evidence, and produce a Phonograph-derived return capsule without promoting sibling memory into source truth or execution authority.
 
-**Architecture:** Add a small HAUNT capsule contract module and a Phonograph-only influence adapter at proposal time. The adapter chooses one bounded mutation-route pressure before `ResolvedPerformance`; downstream performance/MIDI remain renderer-neutral and receive no ambient memory lookup. The first proof uses a checked-in Toaster-derived fixture capsule; the actual Toaster adapter is a separate later plan after Toaster beta gates permit it.
+**Architecture:** Add a small HAUNT capsule contract plus a Phonograph-only proposal-time influence adapter. The first portable relation, `restraint-before-expansion`, maps to one proposal-only performance route: `late-bloom`, a deterministic velocity contour that begins restrained and expands late while pitches, tempo, durations, source observation hashes, and harmony uncertainty remain unchanged. Raw capsules never cross the `ResolvedPerformance` boundary; only the resolved influence summary does.
 
 **Tech Stack:** Node.js >=22, ESM `.mjs`, built-in `node:test`, built-in `node:crypto`, existing `hp-canonical-json-v1` canonicalization/hash utilities, dependency-free MIDI path.
 
@@ -12,32 +12,32 @@
 
 ## Global Constraints
 
-- Cross-appliance memory is `influence-only`; it must not become `evidence`, ancestry, timing authority, score authority, performance authority, or renderer/exporter authority.
+- Cross-appliance memory is `influence-only`; it must not become source `evidence`, ancestry, timing authority, score authority, performance authority, or renderer/exporter authority.
 - Source observation hashes must remain unchanged by HAUNT influence.
-- No hidden entropy: route choice derives only from explicit score identity, ordered capsule identities, named policy/stream, and seed.
+- No hidden entropy: routing derives only from explicit score identity, ordered capsule identities, named policy/stream identity, and seed.
 - No ambient memory lookup after proposal/mutation routing.
-- Valid-but-irrelevant capsules produce deterministic ignore/refusal residue rather than forced influence.
+- Valid-but-irrelevant capsules produce deterministic ignore residue rather than forced influence.
 - No shared package, database, service, model call, UI, cloud sync, or Toaster production behavior in this plan.
 - Keep runtime dependency count at zero.
-- Preserve existing Specimen 001 behavior when no HAUNT capsules are supplied.
+- Preserve Specimen 001 byte/semantic behavior when no HAUNT capsule is supplied.
 
 ---
 
 ## File Structure
 
-- Create `src/haunt-capsule.mjs` — canonical HAUNT capsule construction, validation, hashing, and fail-closed sibling authority rules.
-- Create `src/haunt-influence.mjs` — Phonograph proposal-time admission and deterministic influence-plan construction.
-- Modify `src/mutation.mjs` — consume one explicit influence plan when supplied; preserve legacy behavior when absent.
-- Modify `src/performance.mjs` — carry only already-resolved HAUNT influence evidence, never raw capsules or lookup capability.
-- Modify `src/receipt.mjs` — bind consumed/ignored capsule identities and influence policy into the completed receipt and chain validation.
-- Create `src/haunt-return.mjs` — derive a new influence-only Phonograph capsule from a completed receipt plus bounded unresolved/refusal lineage.
-- Modify `src/run-specimen.mjs` — optionally load a capsule fixture before score mutation and write an optional return capsule sidecar.
-- Create `test/haunt-capsule.test.mjs` — capsule identity, validation, authority, canonicalization, and malformed input tests.
-- Create `test/haunt-influence.test.mjs` — deterministic consume/ignore behavior and source-hash immutability tests.
-- Modify `test/specimen-score-performance.test.mjs` — HAUNT-aware mutation/performance boundary tests plus legacy regression.
-- Modify `test/specimen-run.test.mjs` — receipt and end-to-end sidecar binding tests.
-- Create `test/haunt-return.test.mjs` — return-capsule authority and unresolved/refused lineage tests.
-- Create `test/fixtures/haunt-toaster-restraint-before-expansion.json` — one fixed Toaster-derived capsule fixture with stable receipt/source references and one portable invitation.
+- Create `src/haunt-capsule.mjs` — construct, validate, canonicalize, and hash influence-only capsules.
+- Create `src/haunt-influence.mjs` — turn ordered valid capsules into one deterministic proposal-time influence plan.
+- Modify `src/mutation.mjs` — attach one explicit proposal route and velocity contour; preserve legacy path when absent.
+- Modify `src/performance.mjs` — realize the already-resolved velocity contour and carry only the influence summary.
+- Modify `src/receipt.mjs` — bind influence identity and prove mutation/performance summaries match.
+- Create `src/haunt-return.mjs` — derive one Phonograph-origin return capsule from completed receipt residue.
+- Modify `src/run-specimen.mjs` — optionally load HAUNT capsule JSON and emit canonical return sidecar.
+- Create `test/haunt-capsule.test.mjs`.
+- Create `test/haunt-influence.test.mjs`.
+- Create `test/haunt-return.test.mjs`.
+- Modify `test/specimen-score-performance.test.mjs`.
+- Modify `test/specimen-run.test.mjs`.
+- Create `test/fixtures/haunt-toaster-restraint-before-expansion.json`.
 
 ---
 
@@ -49,176 +49,98 @@
 - Create: `test/fixtures/haunt-toaster-restraint-before-expansion.json`
 
 **Interfaces:**
-- Consumes: `hashCanonical(value)` and canonical JSON safety from `src/provenance.mjs`.
-- Produces: `HAUNT_CAPSULE_SCHEMA`, `validateHauntCapsule(capsule)`, `hashHauntCapsule(capsule)`, `createHauntCapsule(input)`.
+- Consumes: `hashCanonical(value)` from `src/provenance.mjs`.
+- Produces: `HAUNT_CAPSULE_SCHEMA`, `createHauntCapsule(input)`, `validateHauntCapsule(capsule)`, `hashHauntCapsule(capsule)`.
 
-- [ ] **Step 1: Write failing contract tests**
-
-Add tests proving:
+- [ ] **Step 1: Write failing tests**
 
 ```js
 const capsule = createHauntCapsule({
   sourceRef: 'sha256:source',
   encounterRef: 'sha256:receipt',
-  origin: {
-    appliance: 'haunted-toaster',
-    receiptRef: 'sha256:receipt',
-    policy: 'toaster-memory-export/v1',
-  },
-  relations: [{
-    relation: 'restraint-before-expansion',
-    direction: 'positive',
-    strength: 0.8,
-    evidenceRefs: ['sha256:receipt'],
-  }],
-  invitations: [{
-    pressure: 'late-bloom',
-    strength: 0.8,
-    allowedSurfaces: ['mutation-path'],
-  }],
-  unresolved: [],
+  origin: { appliance: 'haunted-toaster', receiptRef: 'sha256:receipt', policy: 'toaster-memory-export/v1' },
+  relations: [{ relation: 'restraint-before-expansion', direction: 'positive', strength: 0.8, evidenceRefs: ['sha256:receipt'] }],
+  invitations: [{ pressure: 'late-bloom', strength: 0.8, allowedSurfaces: ['mutation-path'] }],
   lineage: { parentRefs: [], influenceOnlyRefs: [], refusedRefs: [] },
+  unresolved: [],
   derivedFrom: ['sha256:receipt'],
 });
-
 assert.equal(capsule.schema, 'static-collective/haunt-memory-capsule/v1');
 assert.equal(capsule.provenance.authority, 'influence-only');
 assert.equal(hashHauntCapsule(capsule), capsule.capsuleId);
 ```
 
-Also assert that changing capsule content while reusing the old `capsuleId` throws `HAUNT_IDENTITY_MISMATCH`, authority other than `influence-only` throws `HAUNT_AUTHORITY_VIOLATION`, unsupported surfaces throw `HAUNT_FORBIDDEN_SURFACE`, and malformed origin/receipt refs fail closed.
+Also test `HAUNT_IDENTITY_MISMATCH`, `HAUNT_AUTHORITY_VIOLATION`, `HAUNT_FORBIDDEN_SURFACE`, malformed origin/receipt data, non-finite/out-of-range strength, and deep freezing.
 
-- [ ] **Step 2: Run the focused test to prove RED**
-
-Run:
+- [ ] **Step 2: Run RED**
 
 ```bash
 node --test test/haunt-capsule.test.mjs
 ```
 
-Expected: FAIL because `src/haunt-capsule.mjs` does not exist.
+Expected: module-not-found failure.
 
-- [ ] **Step 3: Implement minimal capsule contract**
+- [ ] **Step 3: Implement the minimal contract**
 
-Implement a dependency-free module that:
+`hashHauntCapsule()` removes only `capsuleId` before calling `hashCanonical()`. `createHauntCapsule()` always writes `provenance.authority: 'influence-only'`, derives identity, then validates. `validateHauntCapsule()` accepts only schema v1 and `allowedSurfaces: ['mutation-path']` for this first crossing.
 
-```js
-export const HAUNT_CAPSULE_SCHEMA = 'static-collective/haunt-memory-capsule/v1';
+- [ ] **Step 4: Create the fixed Toaster-derived fixture**
 
-export function hashHauntCapsule(capsule) {
-  const { capsuleId: _ignored, ...identityBody } = capsule;
-  return hashCanonical(identityBody);
-}
+Use the module to generate one canonical fixture whose portable relation is `restraint-before-expansion` and invitation pressure is `late-bloom`. The receipt/source refs are explicit fixture identities, not claims that a live Toaster database was queried during this test.
 
-export function validateHauntCapsule(capsule) {
-  // exact schema
-  // exact influence-only provenance authority
-  // non-empty origin appliance/receiptRef/policy
-  // arrays for relations/invitations/unresolved and lineage refs
-  // strength finite in 0..1
-  // only allowedSurfaces === ['mutation-path'] for v0.1
-  // recompute capsule identity and reject mismatch
-  return deepFreeze(structuredClone(capsule));
-}
-```
-
-`createHauntCapsule()` must construct the body, derive `capsuleId` from the body without `capsuleId`, then validate the result. Do not accept callers supplying stronger authority.
-
-- [ ] **Step 4: Add the fixed Toaster-derived fixture**
-
-Create `test/fixtures/haunt-toaster-restraint-before-expansion.json` using the exact schema, `origin.appliance: "haunted-toaster"`, one `restraint-before-expansion` relation, one `late-bloom` invitation, `allowedSurfaces: ["mutation-path"]`, and a correctly computed capsule identity generated by the module in a one-off Node command.
-
-- [ ] **Step 5: Run focused tests GREEN**
-
-Run:
+- [ ] **Step 5: Run GREEN and commit**
 
 ```bash
 node --test test/haunt-capsule.test.mjs
-```
-
-Expected: PASS.
-
-- [ ] **Step 6: Commit**
-
-```bash
 git add src/haunt-capsule.mjs test/haunt-capsule.test.mjs test/fixtures/haunt-toaster-restraint-before-expansion.json
 git commit -m "feat: add canonical HAUNT capsule contract"
 ```
 
 ---
 
-### Task 2: Proposal-Time HAUNT Influence Plan
+### Task 2: Proposal-Time Influence Plan
 
 **Files:**
 - Create: `src/haunt-influence.mjs`
 - Create: `test/haunt-influence.test.mjs`
 
 **Interfaces:**
-- Consumes: `validateHauntCapsule()`, `hashHauntCapsule()`, score hash, explicit seed.
-- Produces: `buildHauntInfluencePlan({ score, seed, capsules })` returning frozen `haunted-phonograph/haunt-influence-plan/v1`.
+- Consumes: score, explicit seed, `validateHauntCapsule()`.
+- Produces: `buildHauntInfluencePlan({ score, seed, capsules })` -> frozen `haunted-phonograph/haunt-influence-plan/v1`.
 
-- [ ] **Step 1: Write failing influence tests**
-
-Test four cases:
+- [ ] **Step 1: Write failing tests**
 
 ```js
 const plan = buildHauntInfluencePlan({ score, seed: 'seed-001', capsules: [capsule] });
-assert.equal(plan.schema, 'haunted-phonograph/haunt-influence-plan/v1');
-assert.deepEqual(plan.orderedCapsuleIds, [capsule.capsuleId]);
-assert.deepEqual(plan.consumedCapsuleIds, [capsule.capsuleId]);
-assert.equal(plan.routePressure, 'late-bloom');
 assert.equal(plan.policy, 'haunt-proposal-influence/v1');
 assert.equal(plan.stream, 'haunt/mutation-path/v1');
+assert.equal(plan.routePressure, 'late-bloom');
+assert.deepEqual(plan.consumedCapsuleIds, [capsule.capsuleId]);
 ```
 
-Also prove: same score/seed/capsules gives deep-equal plan; reversed unordered caller input is normalized by `capsuleId`; a valid capsule with no `mutation-path` invitation becomes `ignored` with deterministic reason `NO_APPLICABLE_INVITATION`; and observation hash objects passed to the surrounding test fixture are byte-for-byte unchanged.
+Prove same inputs replay identically; caller order normalizes by `capsuleId`; unsupported pressure becomes deterministic `ignored: [{ capsuleId, reason: 'UNSUPPORTED_PRESSURE' }]`; no applicable invitation becomes `NO_APPLICABLE_INVITATION`; and the score/capsules remain unchanged.
 
-- [ ] **Step 2: Run focused test RED**
+- [ ] **Step 2: Run RED**
 
 ```bash
 node --test test/haunt-influence.test.mjs
 ```
 
-Expected: FAIL because `src/haunt-influence.mjs` is absent.
+- [ ] **Step 3: Implement plan construction**
 
-- [ ] **Step 3: Implement minimal influence plan**
+Validate all capsules, sort by ID, reject contradictory duplicate IDs, select the strongest supported `late-bloom` invitation with `capsuleId` tie-break, and record all non-consumed valid capsules in `ignored`. Do not read observations or renderer state.
 
-Implement:
-
-```js
-export function buildHauntInfluencePlan({ score, seed, capsules = [] }) {
-  // validate non-empty seed and supported score schema
-  // validate every capsule
-  // sort by capsuleId
-  // reject duplicate capsuleIds with contradictory canonical bodies
-  // inspect only invitation.allowedSurfaces === ['mutation-path']
-  // select the strongest invitation deterministically; tie-break by capsuleId
-  // record consumedCapsuleIds, ignored[{ capsuleId, reason }]
-  // never mutate score/capsules
-  // no random/global state
-}
-```
-
-For v0.1 the only supported route pressure is `late-bloom`; unsupported pressure values remain valid capsule data but are deterministically ignored as `UNSUPPORTED_PRESSURE`.
-
-- [ ] **Step 4: Run focused test GREEN**
+- [ ] **Step 4: Run GREEN and commit**
 
 ```bash
 node --test test/haunt-influence.test.mjs
-```
-
-Expected: PASS.
-
-- [ ] **Step 5: Commit**
-
-```bash
 git add src/haunt-influence.mjs test/haunt-influence.test.mjs
 git commit -m "feat: admit HAUNT memory as proposal influence"
 ```
 
 ---
 
-### Task 3: Deterministic Mutation-Path Consumption Without Evidence Promotion
+### Task 3: Execute `late-bloom` as Proposal-Only Dynamics
 
 **Files:**
 - Modify: `src/mutation.mjs`
@@ -226,36 +148,37 @@ git commit -m "feat: admit HAUNT memory as proposal influence"
 - Modify: `test/specimen-score-performance.test.mjs`
 
 **Interfaces:**
-- Consumes: optional `hauntInfluencePlan` from Task 2.
-- Produces: mutation result with explicit `hauntInfluence` summary; performance retains only that resolved summary and capsule IDs.
+- Consumes: optional `hauntInfluencePlan`.
+- Produces: mutation result fields `velocityProfile` and `hauntInfluence`; resolved events use the profile.
 
-- [ ] **Step 1: Write failing mutation/performance tests**
+- [ ] **Step 1: Write failing behavior tests**
 
-Extend setup to load the fixture capsule and build an influence plan, then assert:
+For the four-note Specimen 001 motif, define the v0.1 `late-bloom` contour exactly:
 
 ```js
-const baseline = mutateScore({ score, seed: 'seed-001' });
 const haunted = mutateScore({ score, seed: 'seed-001', hauntInfluencePlan: plan });
-
-assert.equal(haunted.hauntInfluence.policy, 'haunt-proposal-influence/v1');
-assert.equal(haunted.hauntInfluence.routePressure, 'late-bloom');
-assert.deepEqual(haunted.hauntInfluence.consumedCapsuleIds, plan.consumedCapsuleIds);
-assert.deepEqual(observations.hashes, beforeObservationHashes);
+assert.deepEqual(haunted.velocityProfile, [56, 64, 88, 108]);
+assert.deepEqual(haunted.pitches, baseline.pitches);
+assert.deepEqual(haunted.durationsQuarter, baseline.durationsQuarter);
 ```
 
-Define the bounded v0.1 musical effect precisely: `late-bloom` does **not** invent harmony or notes. It changes only the allowed transposition route by deterministically preferring the largest absolute legal offset from the existing `allowedOffsets`; ties are resolved through the existing seed digest. Durations, source evidence, motif intervals, and performer event count remain unchanged.
+Then resolve performance and assert:
 
-Also assert calling `mutateScore({ score, seed })` with no HAUNT plan remains deep-compatible with existing Specimen 001 expectations.
+```js
+assert.deepEqual(performance.events.map(event => event.velocity), [56, 64, 88, 108]);
+assert.deepEqual(observations.hashes, beforeObservationHashes);
+assert.deepEqual(performance.retainedUncertaintyRefs, [observations.hashes.harmonyQuality]);
+```
 
-- [ ] **Step 2: Run focused tests RED**
+Legacy no-HAUNT calls must still resolve all event velocities to `88` and preserve current selected-offset behavior exactly.
+
+- [ ] **Step 2: Run RED**
 
 ```bash
 node --test test/specimen-score-performance.test.mjs
 ```
 
-Expected: new HAUNT assertions fail because `mutateScore` ignores the plan.
-
-- [ ] **Step 3: Implement mutation-path consumption**
+- [ ] **Step 3: Implement mutation route**
 
 Change signature to:
 
@@ -263,43 +186,25 @@ Change signature to:
 export function mutateScore({ score, seed, hauntInfluencePlan = null })
 ```
 
-When `routePressure === 'late-bloom'`, derive an eligible subset containing offsets with maximal absolute magnitude; use the already domain-separated digest to select among ties. When no consumed HAUNT pressure exists, preserve the current modulo selection across all `allowedOffsets` exactly.
+Keep the existing pitch displacement selection untouched. If a consumed influence plan has `routePressure === 'late-bloom'`, add `velocityProfile: [56, 64, 88, 108]` for the four-event v0.1 specimen and copy a compact frozen `hauntInfluence` summary. If no plan is consumed, use the legacy uniform velocity profile `[88, 88, 88, 88]` and `hauntInfluence: null`.
 
-Return:
+The profile is a **proposal choice**. It must never be added to observations or labeled source evidence.
 
-```js
-hauntInfluence: plan ? {
-  policy: plan.policy,
-  stream: plan.stream,
-  orderedCapsuleIds: [...plan.orderedCapsuleIds],
-  consumedCapsuleIds: [...plan.consumedCapsuleIds],
-  ignored: plan.ignored.map(x => ({ ...x })),
-  routePressure: plan.routePressure,
-} : null
-```
+- [ ] **Step 4: Realize the profile downstream**
 
-- [ ] **Step 4: Thread only resolved influence summary through performance**
+`resolvePerformance()` uses `mutationResult.velocityProfile[index]` instead of hard-coded `88`, validates every velocity as integer `1..127`, and copies only the compact influence summary. No capsule body or memory lookup is allowed in performance state.
 
-`resolvePerformance()` must copy `mutationResult.hauntInfluence` into `performance.hauntInfluence` without raw capsule bodies and without looking up memory. Add chain checks that its value is structurally identical to the mutation result summary.
-
-- [ ] **Step 5: Run focused and legacy tests GREEN**
+- [ ] **Step 5: Run GREEN and commit**
 
 ```bash
 node --test test/specimen-score-performance.test.mjs test/specimen-midi.test.mjs
-```
-
-Expected: PASS, including unchanged MIDI projection law.
-
-- [ ] **Step 6: Commit**
-
-```bash
 git add src/mutation.mjs src/performance.mjs test/specimen-score-performance.test.mjs
-git commit -m "feat: route one musical mutation through HAUNT memory"
+git commit -m "feat: let HAUNT memory shape phonograph dynamics"
 ```
 
 ---
 
-### Task 4: Receipt Binding and End-to-End HAUNT Specimen
+### Task 4: Bind HAUNT Into Receipt and End-to-End Run
 
 **Files:**
 - Modify: `src/receipt.mjs`
@@ -307,79 +212,46 @@ git commit -m "feat: route one musical mutation through HAUNT memory"
 - Modify: `test/specimen-run.test.mjs`
 
 **Interfaces:**
-- Consumes: optional ordered capsules and influence plan before mutation; resolved mutation/performance state after Task 3.
-- Produces: receipt field `hauntInfluence` and optional `capsulesPath` input for `runSpecimen()`.
+- Consumes: optional capsule JSON before mutation; mutation/performance HAUNT summary afterward.
+- Produces: completed receipt `hauntInfluence` field and optional `capsulesPath` run input.
 
 - [ ] **Step 1: Write failing receipt tests**
 
-Add assertions that a HAUNT run receipt contains:
+Assert the completed HAUNT receipt binds policy, stream, ordered capsule IDs, consumed IDs, ignored residues, and `routePressure`. A deliberately mismatched mutation/performance influence summary must throw `RECEIPT_CHAIN_MISMATCH`.
 
-```js
-assert.deepEqual(receipt.hauntInfluence, {
-  policy: 'haunt-proposal-influence/v1',
-  stream: 'haunt/mutation-path/v1',
-  orderedCapsuleIds: [capsule.capsuleId],
-  consumedCapsuleIds: [capsule.capsuleId],
-  ignored: [],
-  routePressure: 'late-bloom',
-});
-```
-
-Also assert a mismatched performance/mutation HAUNT summary throws `RECEIPT_CHAIN_MISMATCH` and a legacy no-memory receipt either omits `hauntInfluence` or stores exactly `null` consistently with the implementation choice.
-
-- [ ] **Step 2: Run receipt test RED**
+- [ ] **Step 2: Run RED**
 
 ```bash
 node --test test/specimen-run.test.mjs
 ```
 
-Expected: new HAUNT receipt assertions fail.
-
 - [ ] **Step 3: Extend receipt chain validation**
 
-`buildReceipt()` must compare mutation and performance HAUNT summaries canonically. The completed receipt records only the resolved summary, never raw sibling capsule bodies.
+Compare mutation/performance HAUNT summaries using `hashCanonical()` or exact canonical equality. Store only the resolved summary; never store raw capsule bodies in the receipt.
 
-- [ ] **Step 4: Extend `runSpecimen()` proposal-time loading**
-
-Change signature to:
+- [ ] **Step 4: Extend `runSpecimen()`**
 
 ```js
 runSpecimen({ sourcePath, observationsPath, outputStem, seed, capsulesPath = null })
 ```
 
-When `capsulesPath` is supplied:
+When present, load one object or array from `capsulesPath`, validate capsules, build the influence plan after `buildScore()`, and pass it into `mutateScore()`. When absent, follow the legacy path.
 
-```js
-const rawCapsules = JSON.parse(await readFile(capsulesPath, 'utf8'));
-const capsules = (Array.isArray(rawCapsules) ? rawCapsules : [rawCapsules]).map(validateHauntCapsule);
-const hauntInfluencePlan = buildHauntInfluencePlan({ score, seed, capsules });
-const mutationResult = mutateScore({ score, seed, hauntInfluencePlan });
-```
+- [ ] **Step 5: Prove deterministic crossing**
 
-When absent, call the legacy mutation path with no plan.
+Run the same source/observations/capsule/seed twice and assert identical score hash, resolved-performance hash, MIDI hash, and influence summary. Compare a no-memory run and assert identical admitted observation hashes while its velocities remain legacy `[88,88,88,88]`.
 
-- [ ] **Step 5: Add end-to-end deterministic crossing test**
-
-Run two specimens with identical source, observations, fixture capsule, and seed into separate temp directories. Assert identical `resolvedPerformanceHash`, identical MIDI SHA-256, identical `hauntInfluence`, and unchanged observation hashes. Run a third without capsule and assert the receipt has no consumed capsule IDs and the admitted source hashes are identical to the haunted run.
-
-- [ ] **Step 6: Run focused tests GREEN**
+- [ ] **Step 6: Run GREEN and commit**
 
 ```bash
 node --test test/specimen-run.test.mjs
-```
-
-Expected: PASS.
-
-- [ ] **Step 7: Commit**
-
-```bash
 git add src/receipt.mjs src/run-specimen.mjs test/specimen-run.test.mjs
 git commit -m "feat: bind HAUNT influence into phonograph receipts"
 ```
 
 ---
 
-### Task 5: Phonograph Return Capsule With Unresolved/Refused Residue
+### Task 5: Emit Phonograph Return Residue
 
 **Files:**
 - Create: `src/haunt-return.mjs`
@@ -388,12 +260,10 @@ git commit -m "feat: bind HAUNT influence into phonograph receipts"
 - Modify: `test/specimen-run.test.mjs`
 
 **Interfaces:**
-- Consumes: completed Phonograph receipt, explicit bounded unresolved/refused lineage inputs.
-- Produces: `derivePhonographHauntCapsule({ receipt, unresolved = [], refusedRefs = [] })` and optional `<outputStem>.haunt.json` sidecar.
+- Consumes: completed receipt plus explicit unresolved/refused residue.
+- Produces: `derivePhonographHauntCapsule({ receipt, unresolved = [], refusedRefs = [] })` and `<outputStem>.haunt.json`.
 
-- [ ] **Step 1: Write failing return-capsule tests**
-
-Assert:
+- [ ] **Step 1: Write failing return tests**
 
 ```js
 const returned = derivePhonographHauntCapsule({
@@ -405,72 +275,50 @@ const returned = derivePhonographHauntCapsule({
   }],
   refusedRefs: ['proposal-world:forbidden-range'],
 });
-
 assert.equal(returned.origin.appliance, 'haunted-phonograph');
 assert.equal(returned.provenance.authority, 'influence-only');
-assert.deepEqual(returned.unresolved[0].evidenceRefs, receipt.retainedUncertaintyRefs);
 assert.deepEqual(returned.lineage.refusedRefs, ['proposal-world:forbidden-range']);
 assert.equal(Object.hasOwn(returned, 'evidence'), false);
 ```
 
-Also assert a caller cannot request `authority: 'evidence'`, and the return capsule derives `encounterRef` from a canonical hash of the completed receipt rather than claiming the source hash is the encounter.
+Prove `encounterRef` is the canonical completed-receipt hash, not the source hash, and that no caller can upgrade return authority.
 
-- [ ] **Step 2: Run focused test RED**
+- [ ] **Step 2: Run RED**
 
 ```bash
 node --test test/haunt-return.test.mjs
 ```
 
-Expected: FAIL because `src/haunt-return.mjs` is absent.
+- [ ] **Step 3: Implement derivation**
 
-- [ ] **Step 3: Implement return derivation**
+Build via `createHauntCapsule()`. When the receipt consumed `late-bloom`, emit portable relation `memory-influenced-late-bloom`. Preserve supplied unresolved/refused residue exactly by reference; do not infer KEEP/WEIRD/COMPOST without an actual Human Verdict.
 
-Use `createHauntCapsule()` and derive a small portable relation set from receipt facts only. For v0.1, if the completed receipt consumed a `late-bloom` pressure, emit relation `memory-influenced-late-bloom`; preserve unresolved/refused arrays exactly as supplied and referenced. Do not infer human KEEP/WEIRD/COMPOST without an actual human verdict record.
+- [ ] **Step 4: Emit canonical sidecar**
 
-- [ ] **Step 4: Add optional return sidecar to `runSpecimen()`**
+After successful receipt creation in a HAUNT run, derive and atomically write `<outputStem>.haunt.json`. Use the already-retained harmony uncertainty ref as unresolved evidence and do not invent chord alternatives unless the caller supplied them. If the optional return-sidecar write fails, do not delete or counterfeit the already-completed MIDI/receipt.
 
-When a HAUNT plan was present, after the completed receipt exists derive one return capsule and atomically write:
-
-```text
-<outputStem>.haunt.json
-```
-
-Use canonical JSON plus newline. A failure writing this optional sidecar must not rewrite the already-completed MIDI/receipt as failed; it should reject the function call and leave the completed historical artifacts intact because the execution crossing already succeeded.
-
-- [ ] **Step 5: Extend end-to-end test**
-
-Assert the sidecar is canonical, validates under `validateHauntCapsule()`, names `haunted-phonograph` as origin, is influence-only, retains the harmony uncertainty reference, and does not contain source-facing chord certainty.
-
-- [ ] **Step 6: Run focused tests GREEN**
+- [ ] **Step 5: Run GREEN and commit**
 
 ```bash
 node --test test/haunt-return.test.mjs test/specimen-run.test.mjs
-```
-
-Expected: PASS.
-
-- [ ] **Step 7: Commit**
-
-```bash
 git add src/haunt-return.mjs src/run-specimen.mjs test/haunt-return.test.mjs test/specimen-run.test.mjs
 git commit -m "feat: emit phonograph HAUNT return residue"
 ```
 
 ---
 
-### Task 6: Full Verification, Documentation, and PR Upgrade
+### Task 6: Full Verification and Documentation
 
 **Files:**
 - Modify: `README.md`
 - Create: `docs/haunt-v0.1-verification.md`
 
 **Interfaces:**
-- Consumes: all landed task interfaces.
-- Produces: documented executable command/fixture path and durable exact-head verification evidence.
+- Produces: exact-head verification evidence and usage notes; no new runtime behavior.
 
-- [ ] **Step 1: Add README usage**
+- [ ] **Step 1: Document the HAUNT specimen**
 
-Document an explicit programmatic or small script example that runs the existing specimen with `capsulesPath: test/fixtures/haunt-toaster-restraint-before-expansion.json`. State that the fixture represents a bounded Toaster-derived encounter residue, not Toaster source truth.
+Show how to call `runSpecimen()` with `capsulesPath: 'test/fixtures/haunt-toaster-restraint-before-expansion.json'`. State that the fixture is a bounded Toaster-derived encounter residue and enters only as influence.
 
 - [ ] **Step 2: Run syntax checks**
 
@@ -484,43 +332,33 @@ node --check src/receipt.mjs
 node --check src/run-specimen.mjs
 ```
 
-Expected: all exit 0.
-
-- [ ] **Step 3: Run full test suite**
+- [ ] **Step 3: Run the full suite**
 
 ```bash
 npm test
 ```
 
-Expected: all tests pass, including the pre-existing provenance and Specimen 001 suite plus all HAUNT tests.
+Expected: all pre-existing tests plus all HAUNT tests pass.
 
-- [ ] **Step 4: Run exact specimen proof twice**
+- [ ] **Step 4: Run the exact specimen twice**
 
-Use a Node one-liner or dedicated temporary runner to execute the HAUNT fixture twice with the same seed into two different output stems. Record score hash, resolved performance hash, MIDI SHA-256, consumed capsule ID, and return capsule ID. They must match pairwise.
+Record exact head SHA, source hash, capsule ID, score hash, resolved-performance hash, MIDI hash, return capsule ID, and test count. Identical inputs must produce identical identities.
 
-- [ ] **Step 5: Record verification evidence**
+- [ ] **Step 5: Record verification and commit**
 
-Create `docs/haunt-v0.1-verification.md` with exact commit SHA, commands, pass counts, relevant hashes, and any environment limitation. Do not claim Toaster production integration; explicitly state that the return crossing is contract-ready but the Toaster adapter remains a later gated plan.
-
-- [ ] **Step 6: Commit docs**
+Create `docs/haunt-v0.1-verification.md`; explicitly state that actual Toaster return admission is not yet implemented and remains behind its current beta sequencing gates.
 
 ```bash
 git add README.md docs/haunt-v0.1-verification.md
 git commit -m "docs: record HAUNT v0.1 executable proof"
 ```
 
-- [ ] **Step 7: Push and update PR #8**
+- [ ] **Step 6: Update PR #8**
 
-Push the implementation commits to `docs/haunt-cross-appliance-memory-v1`, update PR #8 title/body from design-only to executable HAUNT v0.1 proof, and mark ready for review only after exact-head checks are green.
+Push all commits to `docs/haunt-cross-appliance-memory-v1`, update PR #8 from design-only to executable proof, and mark ready for review only after exact-head verification is green.
 
 ---
 
 ## Separate Later Plan: Toaster Return Adapter
 
-Do not implement this in the Phonograph plan. After the current Toaster Creative Context Table/candidate-ecology sequencing gates settle, create a separate Toaster plan that:
-
-1. admits a real Phonograph return capsule as `memory/haunt-capsule-v1`;
-2. maps it to Creative Context Table authority `influence-only`;
-3. proves ancestry class remains `none` unless independently selected by explicit human Re-toast ancestry;
-4. proves no raw capsule state crosses `executionForRender()`;
-5. begins with contract admission only, not ordinary candidate behavior change.
+After the current Toaster Creative Context Table/candidate-ecology sequencing gates settle, write a separate Toaster plan that admits a real Phonograph return capsule as `memory/haunt-capsule-v1`, maps it to Creative Context Table authority `influence-only`, proves ancestry remains `none` without independent explicit Re-toast ancestry, and proves no raw capsule state crosses `executionForRender()`. Contract admission comes before any ordinary candidate behavior change.
