@@ -6,6 +6,7 @@ import { admitObservations } from './observations.mjs';
 import { buildScore } from './score.mjs';
 import { validateHauntCapsule } from './haunt-capsule.mjs';
 import { buildHauntInfluencePlan } from './haunt-influence.mjs';
+import { derivePhonographHauntCapsule } from './haunt-return.mjs';
 import { mutateScore } from './mutation.mjs';
 import { resolvePerformance } from './performance.mjs';
 import { encodeMidi } from './midi.mjs';
@@ -14,13 +15,17 @@ import { buildReceipt } from './receipt.mjs';
 export async function runSpecimen({ sourcePath, observationsPath, outputStem, seed, capsulesPath = null }) {
   const midiPath = `${outputStem}.mid`;
   const receiptPath = `${outputStem}.receipt.json`;
+  const hauntPath = `${outputStem}.haunt.json`;
   const midiTempPath = `${midiPath}.tmp-${process.pid}`;
   const receiptTempPath = `${receiptPath}.tmp-${process.pid}`;
+  const hauntTempPath = `${hauntPath}.tmp-${process.pid}`;
 
   await mkdir(dirname(outputStem), { recursive: true });
   await rm(midiTempPath, { force: true });
   await rm(receiptTempPath, { force: true });
+  await rm(hauntTempPath, { force: true });
   await rm(receiptPath, { force: true });
+  await rm(hauntPath, { force: true });
 
   try {
     const source = await identifySource(sourcePath);
@@ -57,15 +62,37 @@ export async function runSpecimen({ sourcePath, observationsPath, outputStem, se
     await writeFile(receiptTempPath, `${canonicalStringify(receipt)}\n`, { encoding: 'utf8', flag: 'wx' });
     await rename(receiptTempPath, receiptPath);
 
-    return {
+    const result = {
       midiPath,
       receiptPath,
       receipt,
       scoreHash: receipt.scoreHash,
       resolvedPerformanceHash: receipt.resolvedPerformanceHash,
     };
+
+    if (hauntInfluencePlan) {
+      const alternatives = Array.isArray(declaration.harmonyQuality?.uncertainty?.alternatives)
+        ? [...declaration.harmonyQuality.uncertainty.alternatives]
+        : [];
+      const hauntCapsule = derivePhonographHauntCapsule({
+        receipt,
+        unresolved: [{
+          subject: 'harmony-quality',
+          alternatives,
+          evidenceRefs: [...receipt.retainedUncertaintyRefs],
+        }],
+        refusedRefs: [],
+      });
+      await writeFile(hauntTempPath, `${canonicalStringify(hauntCapsule)}\n`, { encoding: 'utf8', flag: 'wx' });
+      await rename(hauntTempPath, hauntPath);
+      result.hauntPath = hauntPath;
+      result.hauntCapsule = hauntCapsule;
+    }
+
+    return result;
   } finally {
     await rm(midiTempPath, { force: true }).catch(() => {});
     await rm(receiptTempPath, { force: true }).catch(() => {});
+    await rm(hauntTempPath, { force: true }).catch(() => {});
   }
 }
