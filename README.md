@@ -181,6 +181,44 @@ Specimen 001 intentionally does **not** claim automatic music understanding. Tem
 
 The default source fixture is a compact 1 kHz mono 16-bit PCM WAV containing the four-note phrase `[60, 64, 67, 64]`. Its low sample rate is a repository-fixture choice, not an analysis assumption; its job is to provide real source bytes with stable identity while keeping this executable proof small.
 
+## HAUNT v0.1 — cross-appliance memory
+
+HAUNT adds one bounded way for a witnessed encounter from a sibling appliance to influence Phonograph proposal search without becoming musical evidence or execution authority.
+
+Founding law:
+
+> **The appliances share memory, not authority.**
+
+A `static-collective/haunt-memory-capsule/v1` enters only as `influence-only` context before mutation. HAUNT v0.1 supports one portable invitation, `late-bloom`, on the `mutation-path` surface. The first musical realization is a proposal-only velocity contour `[56, 64, 88, 108]`; pitches, tempo, durations, admitted observation hashes, and retained harmony uncertainty remain unchanged.
+
+The run path accepts an optional capsule file:
+
+```js
+import { runSpecimen } from './src/run-specimen.mjs';
+
+await runSpecimen({
+  sourcePath: 'test/fixtures/specimen-001.wav',
+  observationsPath: 'test/fixtures/specimen-001.observations.json',
+  capsulesPath: 'test/fixtures/haunt-toaster-restraint-before-expansion.json',
+  outputStem: 'out/haunt-001',
+  seed: 'haunt-v0.1-proof',
+});
+```
+
+A HAUNT run writes:
+
+```text
+out/haunt-001.mid
+out/haunt-001.receipt.json
+out/haunt-001.haunt.json
+```
+
+The receipt binds which capsule was consumed or ignored and the resolved influence route. The `.haunt.json` sidecar is a new Phonograph-origin, influence-only return capsule derived from the completed encounter. It preserves unresolved/refused residue without promoting it into source truth.
+
+The checked-in Toaster-origin fixture is a bounded test residue, not Toaster source truth and not a live Toaster database dependency. Actual Toaster return admission remains a separate gated slice after the current Toaster proposal-context lineage settles.
+
+Verification evidence and exact hashes are recorded in `docs/haunt-v0.1-verification.md`.
+
 Run all tests with:
 
 ```bash
