@@ -43,6 +43,15 @@ function assertChain({ source, observations, score, mutationResult, performance 
     || performance.retainedUncertaintyRefs[0] !== observations.hashes.harmonyQuality) {
     fail('RECEIPT_CHAIN_MISMATCH', 'performance uncertainty reference does not match admitted uncertainty');
   }
+
+  const mutationHaunt = mutationResult.hauntInfluence;
+  const performanceHaunt = performance.hauntInfluence;
+  if (Boolean(mutationHaunt) !== Boolean(performanceHaunt)) {
+    fail('RECEIPT_CHAIN_MISMATCH', 'HAUNT influence must be present on both mutation and performance or neither');
+  }
+  if (mutationHaunt && hashCanonical(mutationHaunt) !== hashCanonical(performanceHaunt)) {
+    fail('RECEIPT_CHAIN_MISMATCH', 'performance HAUNT influence does not match mutation result');
+  }
   return scoreHash;
 }
 
@@ -52,7 +61,7 @@ export function buildReceipt({ source, observations, score, mutationResult, perf
   const observationAuthorities = Object.fromEntries(
     Object.entries(observations.claims).map(([key, claim]) => [key, claim.authority]),
   );
-  return deepFreeze({
+  const receipt = {
     schema: 'haunted-phonograph/receipt/v1',
     status: 'completed',
     sourceHash: source.sha256,
@@ -72,5 +81,9 @@ export function buildReceipt({ source, observations, score, mutationResult, perf
       byteLength: midiBytes.length,
     },
     retainedUncertaintyRefs: [...performance.retainedUncertaintyRefs],
-  });
+  };
+  if (mutationResult.hauntInfluence) {
+    receipt.hauntInfluence = structuredClone(mutationResult.hauntInfluence);
+  }
+  return deepFreeze(receipt);
 }
