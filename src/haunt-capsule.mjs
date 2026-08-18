@@ -23,6 +23,15 @@ function deepFreeze(value) {
   return value;
 }
 
+function assertExactKeys(value, allowedKeys, label) {
+  if (!isPlainObject(value)) fail('HAUNT_INVALID_CAPSULE', `${label} must be an object`);
+  for (const key of Object.keys(value)) {
+    if (!allowedKeys.has(key)) {
+      fail('HAUNT_INVALID_CAPSULE', `${label} field ${key} is not declared by HAUNT v0.1`);
+    }
+  }
+}
+
 function requireString(value, label) {
   if (typeof value !== 'string' || value.trim().length === 0) {
     fail('HAUNT_INVALID_CAPSULE', `${label} must be a non-empty string`);
@@ -41,17 +50,19 @@ function requireStrength(value, label) {
 }
 
 function validateRelation(relation, index) {
-  if (!isPlainObject(relation)) fail('HAUNT_INVALID_CAPSULE', `relations[${index}] must be an object`);
-  requireString(relation.relation, `relations[${index}].relation`);
-  requireString(relation.direction, `relations[${index}].direction`);
-  requireStrength(relation.strength, `relations[${index}].strength`);
-  requireStringArray(relation.evidenceRefs, `relations[${index}].evidenceRefs`);
+  const label = `relations[${index}]`;
+  assertExactKeys(relation, new Set(['relation', 'direction', 'strength', 'evidenceRefs']), label);
+  requireString(relation.relation, `${label}.relation`);
+  requireString(relation.direction, `${label}.direction`);
+  requireStrength(relation.strength, `${label}.strength`);
+  requireStringArray(relation.evidenceRefs, `${label}.evidenceRefs`);
 }
 
 function validateInvitation(invitation, index) {
-  if (!isPlainObject(invitation)) fail('HAUNT_INVALID_CAPSULE', `invitations[${index}] must be an object`);
-  requireString(invitation.pressure, `invitations[${index}].pressure`);
-  requireStrength(invitation.strength, `invitations[${index}].strength`);
+  const label = `invitations[${index}]`;
+  assertExactKeys(invitation, new Set(['pressure', 'strength', 'allowedSurfaces']), label);
+  requireString(invitation.pressure, `${label}.pressure`);
+  requireStrength(invitation.strength, `${label}.strength`);
   if (!Array.isArray(invitation.allowedSurfaces)
     || invitation.allowedSurfaces.length !== 1
     || invitation.allowedSurfaces[0] !== 'mutation-path') {
@@ -60,22 +71,23 @@ function validateInvitation(invitation, index) {
 }
 
 function validateLineage(lineage) {
-  if (!isPlainObject(lineage)) fail('HAUNT_INVALID_CAPSULE', 'lineage must be an object');
+  assertExactKeys(lineage, new Set(['parentRefs', 'influenceOnlyRefs', 'refusedRefs']), 'lineage');
   requireStringArray(lineage.parentRefs, 'lineage.parentRefs');
   requireStringArray(lineage.influenceOnlyRefs, 'lineage.influenceOnlyRefs');
   requireStringArray(lineage.refusedRefs, 'lineage.refusedRefs');
 }
 
 function validateUnresolved(unresolved, index) {
-  if (!isPlainObject(unresolved)) fail('HAUNT_INVALID_CAPSULE', `unresolved[${index}] must be an object`);
-  requireString(unresolved.subject, `unresolved[${index}].subject`);
+  const label = `unresolved[${index}]`;
+  assertExactKeys(unresolved, new Set(['subject', 'alternatives', 'evidenceRefs']), label);
+  requireString(unresolved.subject, `${label}.subject`);
   if (!Array.isArray(unresolved.alternatives)) {
-    fail('HAUNT_INVALID_CAPSULE', `unresolved[${index}].alternatives must be an array`);
+    fail('HAUNT_INVALID_CAPSULE', `${label}.alternatives must be an array`);
   }
   unresolved.alternatives.forEach((value, altIndex) => {
-    requireString(value, `unresolved[${index}].alternatives[${altIndex}]`);
+    requireString(value, `${label}.alternatives[${altIndex}]`);
   });
-  requireStringArray(unresolved.evidenceRefs, `unresolved[${index}].evidenceRefs`);
+  requireStringArray(unresolved.evidenceRefs, `${label}.evidenceRefs`);
 }
 
 export function hashHauntCapsule(capsule) {
@@ -85,14 +97,30 @@ export function hashHauntCapsule(capsule) {
 }
 
 export function validateHauntCapsule(capsule) {
-  if (!isPlainObject(capsule) || capsule.schema !== HAUNT_CAPSULE_SCHEMA) {
+  assertExactKeys(
+    capsule,
+    new Set([
+      'schema',
+      'capsuleId',
+      'sourceRef',
+      'encounterRef',
+      'origin',
+      'relations',
+      'lineage',
+      'unresolved',
+      'invitations',
+      'provenance',
+    ]),
+    'capsule',
+  );
+  if (capsule.schema !== HAUNT_CAPSULE_SCHEMA) {
     fail('HAUNT_INVALID_CAPSULE', `capsule must use schema ${HAUNT_CAPSULE_SCHEMA}`);
   }
   requireString(capsule.capsuleId, 'capsuleId');
   requireString(capsule.sourceRef, 'sourceRef');
   requireString(capsule.encounterRef, 'encounterRef');
 
-  if (!isPlainObject(capsule.origin)) fail('HAUNT_INVALID_CAPSULE', 'origin must be an object');
+  assertExactKeys(capsule.origin, new Set(['appliance', 'receiptRef', 'policy']), 'origin');
   requireString(capsule.origin.appliance, 'origin.appliance');
   requireString(capsule.origin.receiptRef, 'origin.receiptRef');
   requireString(capsule.origin.policy, 'origin.policy');
@@ -105,7 +133,7 @@ export function validateHauntCapsule(capsule) {
   if (!Array.isArray(capsule.unresolved)) fail('HAUNT_INVALID_CAPSULE', 'unresolved must be an array');
   capsule.unresolved.forEach(validateUnresolved);
 
-  if (!isPlainObject(capsule.provenance)) fail('HAUNT_INVALID_CAPSULE', 'provenance must be an object');
+  assertExactKeys(capsule.provenance, new Set(['authority', 'derivedFrom', 'canonicalPolicy']), 'provenance');
   if (capsule.provenance.authority !== 'influence-only') {
     fail('HAUNT_AUTHORITY_VIOLATION', 'sibling HAUNT memory must remain influence-only');
   }
