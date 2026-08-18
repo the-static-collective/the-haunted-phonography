@@ -58,7 +58,7 @@ test('rejects sibling memory that claims stronger authority', () => {
   const capsule = createHauntCapsule(input());
   const changed = structuredClone(capsule);
   changed.provenance.authority = 'evidence';
-  delete changed.capsuleId;
+  changed.capsuleId = hashHauntCapsule(changed);
   assert.throws(
     () => validateHauntCapsule(changed),
     error => error?.code === 'HAUNT_AUTHORITY_VIOLATION',
