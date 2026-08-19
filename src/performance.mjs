@@ -19,6 +19,15 @@ export function resolvePerformance({ score, observations, mutationResult }) {
   if (mutationResult?.scoreHash !== scoreHash) fail('MUTATION_SCORE_MISMATCH', 'mutation result does not belong to score');
   const tempoBpm = observations.claims.tempo.value;
   if (!Number.isFinite(tempoBpm) || tempoBpm <= 0) fail('INVALID_TEMPO', 'tempo must be positive');
+
+  const velocityProfile = mutationResult.velocityProfile ?? null;
+  if (velocityProfile) {
+    if (!Array.isArray(velocityProfile) || velocityProfile.length !== mutationResult.pitches.length
+      || velocityProfile.some(velocity => !Number.isInteger(velocity) || velocity < 1 || velocity > 127)) {
+      fail('INVALID_VELOCITY_PROFILE', 'velocity profile must align to events and stay inside MIDI 1..127');
+    }
+  }
+
   const ppq = 480;
   let tick = 0;
   const events = mutationResult.pitches.map((note, index) => {
@@ -29,7 +38,7 @@ export function resolvePerformance({ score, observations, mutationResult }) {
       tick,
       durationTicks,
       note,
-      velocity: 88,
+      velocity: velocityProfile ? velocityProfile[index] : 88,
       channel: 0,
       provenance: recordRealization({
         sourceClaim: score.material.motif,
@@ -40,7 +49,8 @@ export function resolvePerformance({ score, observations, mutationResult }) {
     tick += durationTicks;
     return event;
   });
-  return deepFreeze({
+
+  const performance = {
     schema: 'haunted-phonograph/resolved-performance/v1',
     sourceHash: score.sourceHash,
     scoreHash,
@@ -54,5 +64,9 @@ export function resolvePerformance({ score, observations, mutationResult }) {
     },
     events,
     retainedUncertaintyRefs: [observations.hashes.harmonyQuality],
-  });
+  };
+  if (mutationResult.hauntInfluence) {
+    performance.hauntInfluence = structuredClone(mutationResult.hauntInfluence);
+  }
+  return deepFreeze(performance);
 }
