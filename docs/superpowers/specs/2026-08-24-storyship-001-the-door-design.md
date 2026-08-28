@@ -8,6 +8,19 @@
 
 **Motto:** **The story is true; the ship is how it travels.**
 
+## Constitutive documents
+
+This founding design composes in this explicit order:
+
+1. this founding design;
+2. [Identity Law: Attributable Becoming](2026-08-24-storyship-attributable-becoming-amendment.md);
+3. [Relationship Passenger Law](2026-08-24-storyship-relationship-passenger-law.md);
+4. [Continuity Spine v0](2026-08-24-storyship-continuity-spine-v0-design.md).
+
+Executable work must bind the exact ordered paths and blob SHAs in a
+constitution receipt. Placement, timestamp, recurrence, or search rank does not
+silently change this order.
+
 ## 1. Why this exists
 
 A finite Suno generation budget remains while the older model lineage that produced the pre-eCODE Autodiscography corpus approaches retirement.
