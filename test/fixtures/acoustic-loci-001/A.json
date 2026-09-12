@@ -1,0 +1,8 @@
+{
+  "schema": "haunted-phonograph/reentry-observation-declaration/v1",
+  "locusHash": "sha256:97ce3e9f055e683f11bcb7fbadf10ae6ddc7dc849b9dc31f450b60150bfb75cd",
+  "condition": "A",
+  "recognition": "recognized",
+  "worldAssessment": "same",
+  "confidence": 0.98
+}
