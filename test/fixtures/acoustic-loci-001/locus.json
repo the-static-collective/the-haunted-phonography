@@ -1,0 +1,10 @@
+{
+  "schema": "haunted-phonograph/acoustic-locus-declaration/v1",
+  "locusId": "open-e-001",
+  "relation": {
+    "kind": "declared-auditory-relation",
+    "description": "open-E landmark relation survives renderer change"
+  },
+  "originalWorldRef": "world:porch:t0",
+  "laterWorldRef": "world:road:t1"
+}
