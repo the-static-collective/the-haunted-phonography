@@ -11,20 +11,25 @@ import { mutateScore } from './mutation.mjs';
 import { resolvePerformance } from './performance.mjs';
 import { encodeMidi } from './midi.mjs';
 import { buildReceipt } from './receipt.mjs';
+import { buildDogramTraceSource } from './dogram-trace.mjs';
 
 export async function runSpecimen({ sourcePath, observationsPath, outputStem, seed, capsulesPath = null }) {
   const midiPath = `${outputStem}.mid`;
   const receiptPath = `${outputStem}.receipt.json`;
+  const dogramPath = `${outputStem}.dogram.json`;
   const hauntPath = `${outputStem}.haunt.json`;
   const midiTempPath = `${midiPath}.tmp-${process.pid}`;
   const receiptTempPath = `${receiptPath}.tmp-${process.pid}`;
+  const dogramTempPath = `${dogramPath}.tmp-${process.pid}`;
   const hauntTempPath = `${hauntPath}.tmp-${process.pid}`;
 
   await mkdir(dirname(outputStem), { recursive: true });
   await rm(midiTempPath, { force: true });
   await rm(receiptTempPath, { force: true });
+  await rm(dogramTempPath, { force: true });
   await rm(hauntTempPath, { force: true });
   await rm(receiptPath, { force: true });
+  await rm(dogramPath, { force: true });
   await rm(hauntPath, { force: true });
 
   try {
@@ -59,13 +64,25 @@ export async function runSpecimen({ sourcePath, observationsPath, outputStem, se
       performance,
       midiBytes: finalMidiBytes,
     });
-    await writeFile(receiptTempPath, `${canonicalStringify(receipt)}\n`, { encoding: 'utf8', flag: 'wx' });
-    await rename(receiptTempPath, receiptPath);
+    const dogramTrace = buildDogramTraceSource(receipt);
+    await Promise.all([
+      writeFile(receiptTempPath, `${canonicalStringify(receipt)}\n`, { encoding: 'utf8', flag: 'wx' }),
+      writeFile(dogramTempPath, `${canonicalStringify(dogramTrace)}\n`, { encoding: 'utf8', flag: 'wx' }),
+    ]);
+    await rename(dogramTempPath, dogramPath);
+    try {
+      await rename(receiptTempPath, receiptPath);
+    } catch (error) {
+      await rm(dogramPath, { force: true }).catch(() => {});
+      throw error;
+    }
 
     const result = {
       midiPath,
       receiptPath,
+      dogramPath,
       receipt,
+      dogramTrace,
       scoreHash: receipt.scoreHash,
       resolvedPerformanceHash: receipt.resolvedPerformanceHash,
     };
@@ -93,6 +110,7 @@ export async function runSpecimen({ sourcePath, observationsPath, outputStem, se
   } finally {
     await rm(midiTempPath, { force: true }).catch(() => {});
     await rm(receiptTempPath, { force: true }).catch(() => {});
+    await rm(dogramTempPath, { force: true }).catch(() => {});
     await rm(hauntTempPath, { force: true }).catch(() => {});
   }
 }

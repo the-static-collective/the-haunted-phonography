@@ -57,6 +57,19 @@ function trace(receipt) {
   });
 }
 
+export function buildDogramTraceSource(receipt) {
+  const admitted = requireCompletedReceipt(receipt, 'receipt');
+  return Object.freeze({
+    schema: 'dogram.trace-source/v0',
+    source_schema: RECEIPT_SCHEMA,
+    receipt_hash: hashCanonical(admitted),
+    boundary_order: [...BOUNDARY_ORDER],
+    trace: trace(admitted),
+    authority_boundary: 'comparison-only',
+    note: 'This sidecar preserves declared execution identity for later comparison; it does not assert causality, evidence authority, historical meaning, or artistic meaning.',
+  });
+}
+
 export function buildDogramDeltaSpecimen({ specimenId, leftReceipt, rightReceipt }) {
   if (typeof specimenId !== 'string' || specimenId.trim().length === 0) {
     fail('specimenId must be a non-empty string');
