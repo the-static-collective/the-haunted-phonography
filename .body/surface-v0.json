@@ -7,9 +7,35 @@
     "standard": "static-collective/body-surface/v0",
     "scope": "interface-declaration"
   },
-  "provides": [],
+  "provides": [
+    {
+      "kind": "resolved-performance",
+      "protocol": "haunted-phonograph/resolved-performance",
+      "version": "v1"
+    },
+    {
+      "kind": "mutation-receipt",
+      "protocol": "haunted-phonograph/receipt",
+      "version": "v1"
+    }
+  ],
   "needs": [],
-  "interfaces": [],
+  "interfaces": [
+    {
+      "name": "resolved-performance-out",
+      "direction": "emit",
+      "kind": "resolved-performance",
+      "protocol": "haunted-phonograph/resolved-performance",
+      "version": "v1"
+    },
+    {
+      "name": "completed-mutation-receipt-out",
+      "direction": "emit",
+      "kind": "mutation-receipt",
+      "protocol": "haunted-phonograph/receipt",
+      "version": "v1"
+    }
+  ],
   "measure": {
     "declared": [
       {
@@ -21,6 +47,16 @@
         "dimension": "authority-mode",
         "value": "resolved-performance-before-export",
         "unit": "state"
+      },
+      {
+        "dimension": "output-contract",
+        "value": "haunted-phonograph/resolved-performance/v1",
+        "unit": "protocol"
+      },
+      {
+        "dimension": "output-contract",
+        "value": "haunted-phonograph/receipt/v1",
+        "unit": "protocol"
       }
     ],
     "observed": []
@@ -29,10 +65,18 @@
     {
       "kind": "owner-contract",
       "coordinate": "README.md"
+    },
+    {
+      "kind": "owner-code",
+      "coordinate": "src/performance.mjs"
+    },
+    {
+      "kind": "owner-code",
+      "coordinate": "src/receipt.mjs"
     }
   ],
   "residual_fog": [
-    "ResolvedPerformance is a real handoff concept, but this surface does not invent a body protocol version until the owner machine contract names one explicitly."
+    "ResolvedPerformance v1 and completed mutation receipt v1 are owner-named machine outputs. Extraction into a wider shared package remains unresolved and is not implied by this surface."
   ],
   "non_authorities": [
     "proposal != evidence",
@@ -43,6 +87,14 @@
     {
       "kind": "owner-readme",
       "coordinate": "README.md"
+    },
+    {
+      "kind": "owner-code",
+      "coordinate": "src/performance.mjs"
+    },
+    {
+      "kind": "owner-code",
+      "coordinate": "src/receipt.mjs"
     }
   ],
   "authority": "none"
