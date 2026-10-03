@@ -110,19 +110,22 @@ function signalProfile(pcm, frameCount) {
   for (let frame = 0; frame < frameCount; frame += 1) {
     const left = pcm.readInt16LE(frame * BYTES_PER_FRAME);
     const right = pcm.readInt16LE(frame * BYTES_PER_FRAME + 2);
-    const mono = (left + right) / 2;
-    const normalized = mono / 32768;
+    const leftNormalized = left / 32768;
+    const rightNormalized = right / 32768;
     const quarter = Math.min(3, Math.floor((frame * 4) / frameCount));
-    quarterEnergy[quarter] += normalized * normalized;
+    quarterEnergy[quarter] += (
+      leftNormalized * leftNormalized
+      + rightNormalized * rightNormalized
+    ) / 2;
     quarterSamples[quarter] += 1;
     peak = Math.max(peak, Math.abs(left), Math.abs(right));
     if (
       previous !== null
-      && ((previous < 0 && mono >= 0) || (previous >= 0 && mono < 0))
+      && ((previous < 0 && left >= 0) || (previous >= 0 && left < 0))
     ) {
       zeroCrossings += 1;
     }
-    previous = mono;
+    previous = left;
   }
 
   const rmsQuartilesQ15 = quarterEnergy.map((sum, index) => {
