@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { hashCanonical } from './provenance.mjs';
 import { lstat, readFile, realpath, stat } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
 import { identifySource } from './source.mjs';
@@ -86,8 +86,7 @@ export function proveVaultPhonographChain({ vaultEvidence, phonographReceipt }) 
     provider: 'suno',
     providerTrackId: vaultEvidence.providerTrackId,
     resolvedPerformanceHash: phonographReceipt.resolvedPerformanceHash,
-    receiptHash: 'sha256:' + createHash('sha256')
-      .update(JSON.stringify(phonographReceipt)).digest('hex'),
+    receiptHash: hashCanonical(phonographReceipt),
     laws: ['VAULT_BYTES != MUSICAL EVIDENCE', 'MUTATION != SOURCE',
       'VERIFIED_BYTES != REUSE_LICENSE', 'BRIDGE != CHURCH_APPROVAL'],
   };
