@@ -83,6 +83,7 @@ export async function runSpecimen({ sourcePath, observationsPath, outputStem, se
       dogramPath,
       receipt,
       dogramTrace,
+      performance,
       scoreHash: receipt.scoreHash,
       resolvedPerformanceHash: receipt.resolvedPerformanceHash,
     };
