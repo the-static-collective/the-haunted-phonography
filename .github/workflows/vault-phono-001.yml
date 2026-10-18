@@ -1,0 +1,24 @@
+name: Vault to Haunted Phonograph
+on:
+  pull_request:
+    paths:
+      - 'src/vault-intake.mjs'
+      - 'src/vault-specimen.mjs'
+      - 'src/run-specimen.mjs'
+      - 'test/vault-phono-001.test.mjs'
+      - '.github/workflows/vault-phono-001.yml'
+  workflow_dispatch:
+jobs:
+  vault-phono-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run full Haunted Phonograph test suite
+        run: npm test
+      - name: Prove Vault exact source to Phonograph MIDI crossing
+        run: node --test test/vault-phono-001.test.mjs
