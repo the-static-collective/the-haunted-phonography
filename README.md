@@ -224,3 +224,14 @@ Run all tests with:
 ```bash
 npm test
 ```
+
+## STEM ORCHARD 001 — cross-song HUMKIN stem grafting (private candidate)
+
+A new source-owned adapter renders 2–8 owner-supplied stem layers from at least two HUMKIN songs into a genuinely new WAV arrangement, with SHA-256 source checks, owner-declared BPM/key compatibility, deterministic plan, FFmpeg processing, provenance receipt and an explicitly HELD HUMKIN candidate handoff. A reproducible seeded proposal generator can select vocal × instrumental pairs from a local stem catalog. No stem bytes have been received, and no generated remix has yet been auditioned on real HUMKIN material.
+
+```sh
+node scripts/propose-stem-orchard.mjs private-catalog.json orchard-seed 10 > proposals.json
+node scripts/run-stem-orchard.mjs private-request.json . out/first-candidate
+```
+
+Modal + private Cloudflare R2 can run the exact renderer without changing live radio or public GitHub Pages. A manual GitHub Actions workflow also supports phone-only cloud initiation after separate Modal and R2 credentials exist. **Do not put private stems in the public media bucket.** Full manifest, constraints, cloud steps and HUMKIN editorial review boundary: [STEM ORCHARD 001](docs/STEM-ORCHARD-001.md).
