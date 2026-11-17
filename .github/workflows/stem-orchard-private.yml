@@ -1,0 +1,40 @@
+name: Prepare a PRIVATE HUMKIN stem candidate (Modal + R2)
+on:
+  workflow_dispatch:
+    inputs:
+      request_key:
+        description: "Private R2 key, e.g. requests/orchard-001.json (not a local file)"
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: phonograph-private
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      REQUEST_KEY: ${{ inputs.request_key }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Require privately configured Modal credentials
+        shell: bash
+        run: |
+          if [[ -z "$MODAL_TOKEN_ID" || -z "$MODAL_TOKEN_SECRET" ]]; then
+            echo "::error::Set the two Modal token secrets before running this workflow."
+            exit 1
+          fi
+          if [[ ! "$REQUEST_KEY" =~ ^requests/[a-zA-Z0-9_./-]+\.json$ ]]; then
+            echo "::error::Request must be a private R2 requests/*.json key."
+            exit 1
+          fi
+      - run: python -m pip install "modal==1.6.4"
+      - name: Compute and store held audition in PRIVATE R2
+        run: modal run modal/stem_orchard.py --request-key "$REQUEST_KEY"
+      - name: Preserve editorial boundary
+        run: echo "PRIVATE HOLD only. No track, station schedule, public media, or broadcast changed."
