@@ -48,11 +48,7 @@ def validate_key(key):
     return key
 
 
-@app.function(
-    image=image, secrets=[modal.Secret.from_name("humkin-r2-private")],
-    cpu=2, memory=2048, timeout=2400, max_containers=1,
-)
-def prepare_private_candidate(request_json: str) -> dict:
+def _process(request_json: str) -> dict:
     from botocore.exceptions import ClientError
 
     if len(request_json.encode("utf8")) > 100_000:
@@ -122,10 +118,42 @@ def prepare_private_candidate(request_json: str) -> dict:
         }
 
 
+@app.function(
+    image=image, secrets=[modal.Secret.from_name("humkin-r2-private")],
+    cpu=2, memory=2048, timeout=2400, max_containers=1,
+)
+def prepare_private_candidate(request_json: str) -> dict:
+    return _process(request_json)
+
+
+@app.function(
+    image=image, secrets=[modal.Secret.from_name("humkin-r2-private")],
+    cpu=2, memory=2048, timeout=2400, max_containers=1,
+)
+def prepare_from_r2(request_key: str) -> dict:
+    # This route supports phone-only manual GitHub Actions and older Macs.
+    if not isinstance(request_key, str) or not request_key.startswith("requests/"):
+        raise ValueError("Expected private requests/ JSON key")
+    if not request_key.endswith(".json") or any(
+        part in ("", ".", "..") for part in request_key.split("/")
+    ) or "\\" in request_key or "%" in request_key or "//" in request_key:
+        raise ValueError("Unsafe request key")
+    response = client().get_object(Bucket=os.environ["R2_BUCKET"], Key=request_key)
+    if response["ContentLength"] > 100_000:
+        raise ValueError("Request exceeds 100 KB")
+    request = response["Body"].read(100_001).decode("utf8")
+    return _process(request)
+
+
 @app.local_entrypoint()
-def main(request_path: str):
-    """Run only after creating Modal Secret humkin-r2-private."""
-    request = Path(request_path).read_text(encoding="utf8")
-    result = prepare_private_candidate.remote(request)
+def main(request_path: str = "", request_key: str = ""):
+    """Use exactly one of a local JSON file or private R2 requests/ key."""
+    if bool(request_path) == bool(request_key):
+        raise ValueError("Provide exactly one --request-path or --request-key")
+    if request_key:
+        result = prepare_from_r2.remote(request_key)
+    else:
+        request = Path(request_path).read_text(encoding="utf8")
+        result = prepare_private_candidate.remote(request)
     print(json.dumps(result, indent=2, sort_keys=True))
     print("No public HUMKIN song or rotation was changed.")
