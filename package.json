@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "specimen:001": "node scripts/run-specimen-001.mjs"
+    "specimen:001": "node scripts/run-specimen-001.mjs",
+    "orchard:propose": "node scripts/propose-stem-orchard.mjs",
+    "orchard:render": "node scripts/run-stem-orchard.mjs"
   },
   "engines": {
     "node": ">=22"
